@@ -4,16 +4,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ImagePainter extends CustomPainter {
-  ImagePainter({required this.shader, required this.image});
+  ImagePainter(
+      {required this.shader, required this.image, this.brightness = 0});
 
   final FragmentShader shader;
   final ui.Image image;
+  final double brightness;
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     shader.setFloat(0, size.width);
     shader.setFloat(1, size.height);
+    shader.setFloat(2, brightness);
     shader.setImageSampler(0, image);
     paint.shader = shader;
     canvas.drawRect(Offset.zero & size, paint);
