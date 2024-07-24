@@ -29,6 +29,12 @@ class ImageProcessingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reset() {
+    _image = null;
+    _brightness = 0;
+    notifyListeners();
+  }
+
   Future<void> _init() async {
     final program = await FragmentProgram.fromAsset('shaders/image.frag');
     _shaderImage = program.fragmentShader();
