@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_processing_flutter/components/image_painter.dart';
 import 'package:image_processing_flutter/components/image_picker_widget.dart';
+import 'package:image_processing_flutter/models/effect.dart';
 
 import 'image_processing_view_model.dart';
 
@@ -36,8 +38,8 @@ class ImageProcessingPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 8,
+                const Gap(
+                  8,
                 ),
                 Center(
                   child: Container(
@@ -50,15 +52,18 @@ class ImageProcessingPage extends HookConsumerWidget {
                       painter: ImagePainter(
                           shader: shaderImage,
                           image: image,
-                          brightness: brightness),
+                          brightness: brightness,
+                          effect: ref
+                              .watch(imageProcessingViewModelProvider)
+                              .effect),
                       child: AspectRatio(
                         aspectRatio: image.width / image.height,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
+                const Gap(
+                  40,
                 ),
                 Slider(
                   value: brightness,
@@ -68,7 +73,36 @@ class ImageProcessingPage extends HookConsumerWidget {
                   },
                   max: 0.8,
                   min: -0.8,
-                )
+                ),
+                const Gap(
+                  40,
+                ),
+                SizedBox(
+                  height: 40,
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        final effect = Effect.values[index];
+                        return InkWell(
+                          onTap: () {
+                            ref.read(imageProcessingViewModelProvider).effect =
+                                effect;
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                    color: Colors.deepPurple, width: 2)),
+                            child: Text(effect.name),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (_, __) => const Gap(20),
+                      itemCount: Effect.values.length,
+                      shrinkWrap: true),
+                ),
               ]),
             )
           : ImagePickerWidget((image) =>
